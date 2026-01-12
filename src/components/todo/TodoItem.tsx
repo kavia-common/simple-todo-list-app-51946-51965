@@ -73,6 +73,7 @@ export function TodoItem(props: TodoItemProps) {
           disabled={isEditing}
           aria-disabled={isEditing}
           title="Edit todo"
+          aria-label="Edit todo"
         >
           Edit
         </button>
@@ -81,6 +82,7 @@ export function TodoItem(props: TodoItemProps) {
           className="btn btn--danger"
           onClick={() => onDelete(todo.id)}
           title="Delete todo"
+          aria-label="Delete todo"
         >
           Delete
         </button>
