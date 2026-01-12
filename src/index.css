@@ -1,0 +1,86 @@
+/* Global styles and CSS reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  background-color: #F3F4F6;
+  color: #1F2937;
+  min-height: 100vh;
+}
+
+/* Focus management for accessibility */
+:focus {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
+/* Remove default focus styles for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Ensure focus styles are visible for keyboard users */
+:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
+/* Typography improvements */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+/* Button reset */
+button {
+  font: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Input and textarea improvements */
+input, textarea {
+  font: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9CA3AF;
+  opacity: 1;
+}
+
+/* Improve readability for lists */
+ul, ol {
+  padding-left: 1.5em;
+}
+
+/* Remove default margins */
+ul, ol, p, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+/* Code font family fallbacks */
+code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}

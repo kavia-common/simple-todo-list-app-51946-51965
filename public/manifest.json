@@ -1,0 +1,17 @@
+{
+  "short_name": "TodoList",
+  "name": "TodoList - Stay Organized",
+  "description": "A lightweight, single-page web-based todo list application",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>✓</text></svg>",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2563EB",
+  "background_color": "#F3F4F6",
+  "orientation": "portrait-primary"
+}

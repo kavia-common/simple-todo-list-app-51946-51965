@@ -1,0 +1,101 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F3F4F6;
+  color: #1F2937;
+  line-height: 1.6;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 1rem;
+}
+
+.container {
+  max-width: 768px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Filter tabs */
+.filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 2rem 0;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.filter-tab {
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #6B7280;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.filter-tab:hover {
+  color: #2563EB;
+}
+
+.filter-tab.active {
+  color: #2563EB;
+  border-bottom-color: #2563EB;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .main-content {
+    padding: 1rem 0.5rem;
+  }
+  
+  .filter-tabs {
+    margin: 1.5rem 0;
+  }
+  
+  .filter-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
+button:focus {
+  outline-offset: 2px;
+}
