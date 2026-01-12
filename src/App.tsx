@@ -12,7 +12,7 @@ import {
   updateTodo,
 } from "./storage";
 
-import { Header, TodoForm, TodoList } from "./components";
+import { Header, TodoForm, TodoList, ConfirmDialog } from "./components";
 
 type Filter = "all" | "active" | "completed";
 type SortKey = "updatedAt" | "createdAt" | "priority" | "title";
@@ -25,6 +25,12 @@ type State = {
   sortKey: SortKey;
   sortDirection: SortDirection;
   editingId: string | null;
+  confirmDialog: {
+    isOpen: boolean;
+    type: "clearAll" | "clearCompleted" | null;
+    title: string;
+    message: string;
+  };
 };
 
 type Action =
@@ -34,7 +40,9 @@ type Action =
   | { type: "SET_SORT"; sortKey: SortKey; sortDirection: SortDirection }
   | { type: "START_EDIT"; id: string }
   | { type: "STOP_EDIT" }
-  | { type: "APPLY_TODOS"; todos: Todo[] };
+  | { type: "APPLY_TODOS"; todos: Todo[] }
+  | { type: "SHOW_CONFIRM"; dialogType: "clearAll" | "clearCompleted"; title: string; message: string }
+  | { type: "HIDE_CONFIRM" };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -65,6 +73,26 @@ function reducer(state: State, action: Action): State {
         editingId: stillExists ? state.editingId : null,
       };
     }
+    case "SHOW_CONFIRM":
+      return {
+        ...state,
+        confirmDialog: {
+          isOpen: true,
+          type: action.dialogType,
+          title: action.title,
+          message: action.message,
+        },
+      };
+    case "HIDE_CONFIRM":
+      return {
+        ...state,
+        confirmDialog: {
+          isOpen: false,
+          type: null,
+          title: "",
+          message: "",
+        },
+      };
     default:
       return state;
   }
@@ -115,11 +143,51 @@ export default function App() {
     sortKey: "updatedAt",
     sortDirection: "desc",
     editingId: null,
+    confirmDialog: {
+      isOpen: false,
+      type: null,
+      title: "",
+      message: "",
+    },
   });
 
   useEffect(() => {
     dispatch({ type: "INIT", todos: loadTodos() });
   }, []);
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle shortcuts when not editing and no dialog open
+      if (state.editingId || state.confirmDialog.isOpen) return;
+      
+      // Handle keyboard shortcuts with Ctrl/Cmd key
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key.toLowerCase()) {
+          case "1":
+            e.preventDefault();
+            dispatch({ type: "SET_FILTER", filter: "all" });
+            break;
+          case "2":
+            e.preventDefault();
+            dispatch({ type: "SET_FILTER", filter: "active" });
+            break;
+          case "3":
+            e.preventDefault();
+            dispatch({ type: "SET_FILTER", filter: "completed" });
+            break;
+          case "f":
+            e.preventDefault();
+            // Focus search input
+            document.getElementById("search")?.focus();
+            break;
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [state.editingId, state.confirmDialog.isOpen]);
 
   const counts = useMemo(() => getCounts(), [state.todos]);
 
@@ -184,20 +252,39 @@ export default function App() {
   }
 
   function handleClearCompleted() {
-    // No bulk API in storage layer by design; we do best-effort by filtering and saving via update/delete.
-    // To keep persistence consistent, we delete completed items one-by-one using the existing API.
-    const completedIds = state.todos.filter((t) => t.completed).map((t) => t.id);
-    let next = state.todos;
-    for (const id of completedIds) {
-      next = deleteTodo(id);
-    }
-    applyPersisted(next);
-    dispatch({ type: "STOP_EDIT" });
+    const completedCount = state.todos.filter((t) => t.completed).length;
+    dispatch({
+      type: "SHOW_CONFIRM",
+      dialogType: "clearCompleted",
+      title: "Clear Completed Todos?",
+      message: `This will permanently delete ${completedCount} completed todo${completedCount === 1 ? "" : "s"}. This action cannot be undone.`,
+    });
   }
 
   function handleClearAll() {
-    clearTodos();
-    applyPersisted([]);
+    const totalCount = state.todos.length;
+    dispatch({
+      type: "SHOW_CONFIRM",
+      dialogType: "clearAll",
+      title: "Clear All Todos?",
+      message: `This will permanently delete all ${totalCount} todo${totalCount === 1 ? "" : "s"}. This action cannot be undone.`,
+    });
+  }
+
+  function executeClearAction() {
+    if (state.confirmDialog.type === "clearCompleted") {
+      // No bulk API in storage layer by design; we do best-effort by filtering and saving via update/delete.
+      // To keep persistence consistent, we delete completed items one-by-one using the existing API.
+      const completedIds = state.todos.filter((t) => t.completed).map((t) => t.id);
+      let next = state.todos;
+      for (const id of completedIds) {
+        next = deleteTodo(id);
+      }
+      applyPersisted(next);
+    } else if (state.confirmDialog.type === "clearAll") {
+      clearTodos();
+      applyPersisted([]);
+    }
     dispatch({ type: "STOP_EDIT" });
   }
 
@@ -335,7 +422,23 @@ export default function App() {
           <span className="footer__muted">
             Stored locally in your browser (localStorage).
           </span>
+          <div className="footer__shortcuts" aria-label="Keyboard shortcuts">
+            <span className="footer__muted">
+              Shortcuts: Ctrl+1/2/3 (filter), Ctrl+F (search)
+            </span>
+          </div>
         </footer>
+
+        <ConfirmDialog
+          isOpen={state.confirmDialog.isOpen}
+          title={state.confirmDialog.title}
+          message={state.confirmDialog.message}
+          confirmLabel={state.confirmDialog.type === "clearAll" ? "Delete All" : "Delete Completed"}
+          cancelLabel="Cancel"
+          variant="danger"
+          onConfirm={executeClearAction}
+          onCancel={() => dispatch({ type: "HIDE_CONFIRM" })}
+        />
       </main>
     </div>
   );

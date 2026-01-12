@@ -61,7 +61,10 @@ export function TodoForm(props: TodoFormProps) {
     setTouched(true);
 
     const title = draft.title.trim();
-    if (title.length === 0) return;
+    if (title.length === 0) {
+      titleInputRef.current?.focus();
+      return;
+    }
 
     const description = draft.description.trim();
     onSubmit({
@@ -77,8 +80,22 @@ export function TodoForm(props: TodoFormProps) {
     }
   }
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    // Submit on Ctrl+Enter or Cmd+Enter
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(e as any);
+    }
+    
+    // Cancel edit on Escape
+    if (e.key === "Escape" && mode === "edit" && onCancel) {
+      e.preventDefault();
+      onCancel();
+    }
+  }
+
   return (
-    <form className="form" onSubmit={handleSubmit} aria-label="Todo form">
+    <form className="form" onSubmit={handleSubmit} onKeyDown={handleKeyDown} aria-label="Todo form">
       <div className="form__grid">
         <div className="field">
           <label className="label" htmlFor={titleId}>
@@ -87,13 +104,14 @@ export function TodoForm(props: TodoFormProps) {
           <input
             ref={titleInputRef}
             id={titleId}
-            className="input"
+            className={`input ${titleError ? "input--error" : ""}`}
             value={draft.title}
             placeholder="What needs doing?"
             onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
             onBlur={() => setTouched(true)}
             aria-invalid={Boolean(titleError)}
             aria-describedby={titleError ? `${titleId}-error` : undefined}
+            aria-required="true"
           />
           {titleError ? (
             <div id={`${titleId}-error`} className="field__error" role="alert">

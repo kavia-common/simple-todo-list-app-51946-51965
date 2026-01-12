@@ -146,6 +146,16 @@
   box-shadow: 0 0 0 3px rgba(140, 180, 255, 0.18);
 }
 
+.input--error {
+  border-color: rgba(255, 140, 140, 0.55);
+  background: rgba(255, 140, 140, 0.08);
+}
+
+.input--error:focus {
+  border-color: rgba(255, 140, 140, 0.65);
+  box-shadow: 0 0 0 3px rgba(255, 140, 140, 0.18);
+}
+
 .input--sm,
 .select--sm {
   padding: 8px 10px;
@@ -405,6 +415,157 @@
   font-size: 12px;
 }
 
+.footer__shortcuts {
+  margin-top: 4px;
+}
+
+/* Confirmation Dialog Styles */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 1000;
+  animation: dialogFadeIn 0.2s ease-out;
+}
+
+.dialog {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: dialogSlideIn 0.2s ease-out;
+}
+
+.dialog__header {
+  margin-bottom: 14px;
+}
+
+.dialog__title {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.dialog__body {
+  margin-bottom: 20px;
+}
+
+.dialog__message {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.dialog__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+@keyframes dialogFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dialogSlideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced keyboard focus styles */
+.btn:focus-visible,
+.input:focus-visible,
+.textarea:focus-visible,
+.select:focus-visible {
+  outline: 2px solid rgba(140, 180, 255, 0.8);
+  outline-offset: 2px;
+}
+
+.seg__btn:focus-visible {
+  outline: 2px solid rgba(140, 180, 255, 0.8);
+  outline-offset: 2px;
+}
+
+.check input:focus-visible + .check__box {
+  outline: 2px solid rgba(140, 180, 255, 0.8);
+  outline-offset: 2px;
+}
+
+/* Warning button variant */
+.btn--warning {
+  border-color: rgba(255, 200, 120, 0.55);
+  background: rgba(255, 200, 120, 0.12);
+}
+
+/* Mobile-first responsive improvements */
+@media (max-width: 480px) {
+  .app {
+    padding: 12px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .header__actions {
+    gap: 6px;
+  }
+  
+  .btn {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+  
+  .controlRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  
+  .label--inline {
+    margin-right: 0;
+    min-width: auto;
+  }
+  
+  .todo__actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .form__actions {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 839px) {
+  .controls {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .controlRow {
+    justify-content: space-between;
+  }
+  
+  .todo__actions {
+    flex-wrap: wrap;
+  }
+}
+
 @media (min-width: 840px) {
   .card {
     padding: 28px;
@@ -442,5 +603,55 @@
 
   .todo__actions {
     justify-content: flex-end;
+  }
+  
+  .footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .footer__shortcuts {
+    margin-top: 0;
+  }
+}
+
+/* Improved mobile dialog */
+@media (max-width: 480px) {
+  .dialog-backdrop {
+    padding: 12px;
+  }
+  
+  .dialog {
+    padding: 16px;
+  }
+  
+  .dialog__actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  
+  .dialog__actions .btn {
+    width: 100%;
+  }
+}
+
+/* Touch-friendly interactive elements */
+@media (pointer: coarse) {
+  .btn, .seg__btn {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+  
+  .check__box {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .check input:checked + .check__box::after {
+    width: 12px;
+    height: 8px;
+    top: 8px;
+    left: 7px;
   }
 }
